@@ -1,19 +1,17 @@
-version: '3.8'
-
 services:
   postgres:
-      image: postgres:15
-      container_name: postgres-olist
-      restart: always
-      environment:
-        POSTGRES_USER: olist_user
-        POSTGRES_PASSWORD: olist_password
-        POSTGRES_DB: olist_db
-      ports:
-        - "5434:5432"  
-      volumes:
-        - postgres_olist_data:/var/lib/postgresql/data
-        - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    image: postgres:15
+    container_name: postgres-olist
+    restart: always
+    environment:
+      POSTGRES_USER: olist_user
+      POSTGRES_PASSWORD: olist_password
+      POSTGRES_DB: olist_db
+    ports:
+      - "5434:5432"  
+    volumes:
+      - postgres_olist_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   airflow-webserver:
     build: ./airflow
@@ -24,7 +22,7 @@ services:
       - postgres
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://olist_user:olist_password@postgres:5432/olist_db
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://olist_user:olist_password@postgres:5432/olist_db?options=-csearch_path=public
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
       AIRFLOW__CORE__LOGGING_LEVEL: INFO
     volumes:
@@ -46,7 +44,7 @@ services:
       - airflow-webserver
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://olist_user:olist_password@postgres:5432/olist_db
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://olist_user:olist_password@postgres:5432/olist_db?options=-csearch_path=public
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./scripts:/opt/airflow/scripts
