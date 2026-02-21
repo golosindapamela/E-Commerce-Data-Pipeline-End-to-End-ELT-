@@ -62,15 +62,5 @@ services:
       - postgres
     command: tail -f /dev/null
 
-  python-ingestion:
-    build:
-      context: ./scripts
-    container_name: python-olist
-    depends_on:
-      - postgres
-    volumes:
-      - ./data:/app/data                            
-    restart: on-failure
-
 volumes:
   postgres_olist_data:
