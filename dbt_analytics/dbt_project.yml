@@ -2,21 +2,24 @@ name: 'dbt_analytics'
 version: '1.0.0'
 config-version: 2
 
+
 profile: 'olist_profile'
+
 
 model-paths: ["models"]
 seed-paths: ["seeds"]
 test-paths: ["tests"]
 macro-paths: ["macros"]
 
+
 models:
   dbt_analytics:
     # Staging Layer: Cleaning and renaming raw tables
     staging:
       +materialized: view
-      +schema: raw
-    
-    # Marts Layer: Dimensional modeling (Star Schema) 
+      # This will build views in the 'analytics' schema
+   
+    # Marts Layer: Dimensional modeling (Star Schema)
     marts:
       +materialized: table
-      +schema: analytics
+      # This will build tables in the 'analytics' schema
