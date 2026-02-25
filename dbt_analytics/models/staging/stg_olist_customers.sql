@@ -7,8 +7,8 @@ select
     customer_unique_id,
 
     -- Location attributes
-    customer_zip_code_prefix
-    customer_city
+    customer_zip_code_prefix,
+    customer_city,
     customer_state
 
 from {{ source('olist_raw', 'olist_customers_dataset') }}
