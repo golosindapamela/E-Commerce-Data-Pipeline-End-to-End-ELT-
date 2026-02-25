@@ -3,10 +3,10 @@ olist_profile:
   outputs:
     dev:
       type: postgres
-      host: postgres-olist      
-      user: olist_user          
-      password: olist_password  
-      port: 5432                
-      dbname: olist_db          
-      schema: public           
+      host: postgres        
+      user: olist_user
+      password: olist_password
+      port: 5432
+      dbname: olist_db
+      schema: analytics  
       threads: 4
