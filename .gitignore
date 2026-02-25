@@ -1,0 +1,13 @@
+# Airflow
+airflow/logs/
+airflow/plugins/
+
+# dbt
+dbt_analytics/target/
+dbt_analytics/dbt_packages/
+dbt_analytics/logs/
+
+# Environment & Secrets
+.env
+.DS_Store
+__pycache__/

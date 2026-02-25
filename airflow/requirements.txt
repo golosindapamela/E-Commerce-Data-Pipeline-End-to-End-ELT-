@@ -1,0 +1,9 @@
+# Database Connectivity
+psycopg2-binary
+sqlalchemy
+
+# Data Manipulation 
+pandas
+
+# dbt Integration 
+dbt-postgres

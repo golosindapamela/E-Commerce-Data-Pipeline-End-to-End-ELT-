@@ -1,0 +1,67 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-olist
+    restart: always
+    environment:
+      POSTGRES_USER: olist_user
+      POSTGRES_PASSWORD: olist_password
+      POSTGRES_DB: olist_db
+    ports:
+      - "5434:5432"  
+    volumes:
+      - postgres_olist_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  airflow-webserver:
+    build: ./airflow
+    container_name: airflow-webserver-olist
+    restart: always
+    user: "${AIRFLOW_UID:-50000}:0" 
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://olist_user:olist_password@postgres:5432/olist_db?options=-csearch_path=public
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__CORE__LOGGING_LEVEL: INFO
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags            
+      - ./scripts:/opt/airflow/scripts              
+      - ./data:/opt/airflow/data                    
+      - ./airflow/logs:/opt/airflow/logs            
+      - ./dbt_analytics:/opt/airflow/dbt            
+    ports:
+      - "8081:8080"
+    command: webserver
+
+  airflow-scheduler:
+    build: ./airflow
+    container_name: airflow-scheduler-olist
+    restart: always
+    user: "${AIRFLOW_UID:-50000}:0" 
+    depends_on:
+      - airflow-webserver
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://olist_user:olist_password@postgres:5432/olist_db?options=-csearch_path=public
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./scripts:/opt/airflow/scripts
+      - ./data:/opt/airflow/data
+      - ./airflow/logs:/opt/airflow/logs
+      - ./dbt_analytics:/opt/airflow/dbt
+    command: scheduler
+
+  dbt:
+    image: ghcr.io/dbt-labs/dbt-postgres:1.7.6
+    container_name: dbt-olist
+    working_dir: /usr/app
+    volumes:
+      - ./dbt_analytics:/usr/app                      
+    depends_on:
+      - postgres
+    command: tail -f /dev/null
+
+volumes:
+  postgres_olist_data:
