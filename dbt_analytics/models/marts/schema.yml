@@ -30,12 +30,16 @@ models:
               to: ref('dim_sellers')
               field: seller_id
       - name: order_date_key
-        description: "Foreign key linking to dim_date."
+        description: "Foreign key linking to dim_date (YYYY-MM-DD)."
         tests:
           - not_null
           - relationships:
               to: ref('dim_date')
               field: date_day
+      - name: total_item_value
+        description: "Calculated as price + freight_value."
+        tests:
+          - not_null
 
   - name: dim_customers
     description: "Dimension table containing unique customer attributes and geographic details."
@@ -47,7 +51,7 @@ models:
           - not_null
 
   - name: dim_products
-    description: "Product dimension enriched with English category translations."
+    description: "Product dimension enriched with English category translations and physical specifications."
     columns:
       - name: product_id
         description: "Primary key for the product dimension."
@@ -65,10 +69,10 @@ models:
           - not_null
 
   - name: dim_date
-    description: "Daily date dimension for temporal analysis."
+    description: "Daily date dimension for temporal analysis and reporting."
     columns:
-      - name: date_day 
-        description: "Primary key for the date dimension."
+      - name: date_day
+        description: "Primary key for the date dimension (Date format)."
         tests:
           - unique
           - not_null
