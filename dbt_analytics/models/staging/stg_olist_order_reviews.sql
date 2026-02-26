@@ -1,5 +1,5 @@
 -- Select customer order reviews from the source table.
-select
+select distinct
     -- Primary and Foreign Keys
     review_id,
     order_id,
