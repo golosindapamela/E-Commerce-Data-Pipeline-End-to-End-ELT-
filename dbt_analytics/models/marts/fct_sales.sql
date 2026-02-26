@@ -28,15 +28,15 @@ order_reviews as (
 )
 
 select
-    -- Foreign keys (Dimension Joins) 
+    -- Degenerate Dimension (Identifies the transaction)
     oi.order_id,
+    o.order_status,
+
+    -- Foreign Keys (Links to Dimension Tables)
     oi.product_id,
     oi.seller_id,
     o.customer_id,
     o.order_purchase_at::date as order_date_key,
-
-    -- Degenerate dimension 
-    o.order_status,
 
     -- Item-level metrics (Facts) 
     oi.price,
