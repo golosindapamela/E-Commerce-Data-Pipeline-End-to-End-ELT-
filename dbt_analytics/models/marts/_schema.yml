@@ -48,8 +48,6 @@ models:
         description: "Sum of all total_item_value for a specific order_id."
       - name: order_status
         description: "Current status of the order (delivered, canceled, etc.)."
-      - name: actual_delivery_time
-        description: "Calculated time difference between purchase and delivery."
       - name: avg_review_score
         description: "Average review score assigned to the order."
       - name: max_installments
