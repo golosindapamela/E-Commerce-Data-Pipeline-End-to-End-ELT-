@@ -12,11 +12,11 @@ select
     -- Primary Key
     p.product_id,
 
-    -- Category Names (Coalesce to English, fallback to Portuguese)
-    coalesce(t.product_category_name_english, p.product_category_name) as product_category_name,
+    -- Category Names
+    coalesce(t.product_category_name_english, p.product_category_name) as category_name,
     p.product_category_name as product_category_name_pt,
 
-    -- Product Details
+    -- Product Details (Use the names defined in stg_olist_products)
     p.product_name_length,
     p.product_description_length,
     p.product_photos_count,

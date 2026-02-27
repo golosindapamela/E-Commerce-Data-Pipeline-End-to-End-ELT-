@@ -3,9 +3,14 @@ with sellers as (
     select * from {{ ref('stg_olist_sellers') }}
 ),
 
--- Geolocation reference data (deduplicated by zip code)
 geolocation as (
-    select * from {{ ref('stg_olist_geolocation') }}
+    -- Deduplicate geolocation so there is only 1 row per zip code
+    select distinct on (geolocation_zip_code_prefix)
+        geolocation_zip_code_prefix,
+        geolocation_lat,
+        geolocation_lng
+    from {{ ref('stg_olist_geolocation') }}
+    order by geolocation_zip_code_prefix
 )
 
 select
