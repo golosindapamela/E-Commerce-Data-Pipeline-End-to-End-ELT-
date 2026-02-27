@@ -10,9 +10,11 @@ from ingest_to_postgres import load_csv_to_postgres
 
 with DAG(
     'olist_data_ingestion',
+    description='Ingest Olist CSV files into a designated "raw data landing" directory/table in PostgreSQL.',
     start_date=datetime(2026, 2, 20),
     schedule_interval=None, # Set to None for manual runs
-    catchup=False
+    catchup=False,
+    tags=['olist', 'ingest']
 ) as dag:
 
     DATA_DIR = '/opt/airflow/data'
