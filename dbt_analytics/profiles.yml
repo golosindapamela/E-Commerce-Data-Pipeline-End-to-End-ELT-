@@ -1,0 +1,12 @@
+olist_profile:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: postgres        
+      user: olist_user
+      password: olist_password
+      port: 5432
+      dbname: olist_db
+      schema: analytics  
+      threads: 4

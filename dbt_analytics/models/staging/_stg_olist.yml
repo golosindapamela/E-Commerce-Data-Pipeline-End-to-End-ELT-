@@ -1,0 +1,192 @@
+models:
+  - name: stg_olist_customers
+    description: "Details of customers who place orders."
+    columns:
+      - name: customer_id
+        description: "Unique identifier for each customer."
+        tests:
+          - unique
+          - not_null
+      - name: customer_unique_id
+        description: "Unique identifier for a customer across multiple orders."
+      - name: customer_zip_code_prefix
+        description: "Postal code prefix of the customer."
+      - name: customer_city
+        description: "City where the customer is located."
+      - name: customer_state
+        description: "State where the customer is located."
+
+  - name: stg_olist_orders
+    description: "Stores information about customer orders."
+    columns:
+      - name: order_id
+        description: "Unique identifier for each order."
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "ID of the customer who placed the order."
+        tests:
+          - not_null
+          - relationships:
+              to: source('olist_raw','olist_customers_dataset')
+              field: customer_id
+      - name: order_status
+        description: "Current status of the order (e.g., delivered, shipped, canceled)."
+      - name: order_purchase_at
+        description: "Timestamp when the order was placed."
+      - name: order_approved_at
+        description: "Timestamp when the payment was approved."
+      - name: order_delivered_carrier_at
+        description: "Date when the order was handed over to the carrier."
+      - name: order_delivered_customer_at
+        description: "Date when the customer received the order."
+      - name: order_estimated_delivery_at
+        description: "Estimated delivery date of the order."
+
+  - name: stg_olist_order_items
+    description: "Details of products in each order."
+    columns:
+      - name: order_id
+        description: "Identifier of the order."
+        tests:
+          - not_null
+          - relationships:
+              to: source('olist_raw','olist_orders_dataset')
+              field: order_id
+      - name: item_sequence
+        description: "Sequential number of the item in the order."
+        tests:
+          - not_null
+      - name: product_id
+        description: "Identifier of the product in the order."
+        tests:
+          - relationships:
+              to: source('olist_raw','olist_products_dataset')
+              field: product_id
+      - name: seller_id
+        description: "Identifier of the seller who provided the product."
+        tests:
+          - relationships:
+              to: source('olist_raw','olist_sellers_dataset')
+              field: seller_id
+      - name: shipping_limit_at
+        description: "Deadline for the seller to ship the product."
+      - name: price
+        description: "Price of the product."
+        tests:
+          - not_null
+      - name: freight_value
+        description: "Cost of shipping the product."
+        tests:
+          - not_null
+
+  - name: stg_olist_products
+    description: "Information about products available for sale."
+    columns:
+      - name: product_id
+        description: "Unique identifier for each product."
+        tests:
+          - unique
+          - not_null
+      - name: product_category_name
+        description: "Category name of the product."
+      - name: product_name_length
+        description: "Length of the product name (in characters)."
+      - name: product_description_length
+        description: "Length of the product description (in characters)."
+      - name: product_photos_count
+        description: "Number of photos available for the product."
+      - name: product_weight_g
+        description: "Weight of the product in grams."
+      - name: product_length_cm
+        description: "Length of the product in centimeters."
+      - name: product_height_cm
+        description: "Height of the product in centimeters."
+      - name: product_width_cm
+        description: "Width of the product in centimeters."
+
+  - name: stg_olist_order_payments
+    description: "Payment details for each order."
+    columns:
+      - name: order_id
+        description: "Identifier of the order."
+        tests:
+          - not_null
+          - relationships:
+              to: source('olist_raw','olist_orders_dataset')
+              field: order_id
+      - name: payment_sequential
+        description: "Sequence number for payments related to the order."
+      - name: payment_type
+        description: "Payment method used (e.g., credit card, boleto)."
+      - name: payment_installments
+        description: "Number of installments chosen for the payment."
+      - name: total_payment_amount
+        description: "Total payment amount."
+        tests:
+          - not_null
+
+  - name: stg_olist_order_reviews
+    description: "Customer reviews for orders."
+    columns:
+      - name: review_id
+        description: "Unique identifier for each review."
+        tests:
+          - not_null
+      - name: order_id
+        description: "Identifier of the order being reviewed."
+        tests:
+          - relationships:
+              to: source('olist_raw','olist_orders_dataset')
+              field: order_id
+      - name: review_score
+        description: "Rating given by the customer (e.g., 1-5 stars)."
+      - name: review_comment_title
+        description: "Title of the review (if provided)."
+      - name: review_comment_message
+        description: "Text message left by the customer as feedback."
+      - name: review_created_at
+        description: "Date the review was submitted."
+      - name: review_answered_at
+        description: "Timestamp when the review was responded to."
+
+  - name: stg_olist_sellers
+    description: "Details of sellers offering products."
+    columns:
+      - name: seller_id
+        description: "Unique identifier for each seller."
+        tests:
+          - unique
+          - not_null
+      - name: seller_zip_code_prefix
+        description: "Postal code prefix of the seller."
+      - name: seller_city
+        description: "City where the seller is located."
+      - name: seller_state
+        description: "State where the seller is located."
+
+  - name: stg_olist_geolocation
+    description: "Geographical data of customers and sellers."
+    columns:
+      - name: geolocation_zip_code_prefix
+        description: "Postal code prefix of the location."
+      - name: geolocation_lat
+        description: "Latitude coordinate."
+      - name: geolocation_lng
+        description: "Longitude coordinate."
+      - name: geolocation_city
+        description: "City name."
+      - name: geolocation_state
+        description: "State name."
+
+  - name: stg_product_category_name_translation
+    description: "Mapping of product category names to English."
+    columns:
+      - name: product_category_name
+        description: "Original category name."
+        tests:
+          - unique
+          - not_null
+      - name: product_category_name_english
+        description: "Translated category name in English."
