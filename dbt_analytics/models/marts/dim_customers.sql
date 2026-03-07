@@ -1,6 +1,14 @@
 -- Base customer data from staging
 with customers as (
-    select * from {{ ref('stg_olist_customers') }}
+    -- Use DISTINCT ON to ensure each customer_id appears only once
+    select distinct on (customer_id)
+        customer_id,
+        customer_unique_id,
+        customer_zip_code_prefix,
+        customer_city,
+        customer_state
+    from {{ ref('stg_olist_customers') }}
+    order by customer_id
 ),
 
 -- Geolocation reference data (deduplicated by zip code)
