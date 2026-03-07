@@ -1,6 +1,13 @@
 -- Base seller data from staging
 with sellers as (
-    select * from {{ ref('stg_olist_sellers') }}
+    -- Use DISTINCT ON to ensure each seller_id is unique for the dimension table
+    select distinct on (seller_id)
+        seller_id,
+        seller_zip_code_prefix,
+        seller_city,
+        seller_state
+    from {{ ref('stg_olist_sellers') }}
+    order by seller_id -- Required for DISTINCT ON syntax
 ),
 
 geolocation as (
