@@ -61,6 +61,9 @@ This is the main "Orchestrator" that automates the end-to-end flow on a daily ba
   - **dbt Test:** Executes `dbt test` as a final gatekeeper to validate data quality.
 - **Fail-Fast Logic:** The tasks are linked (`ingest >> run >> test`), meaning if the ingestion or transformation fails, the pipeline stops immediately to protect the integrity of the dashboard data.
 
+## Dashboard
+<img width="1755" height="984" alt="Dashboard" src="https://github.com/user-attachments/assets/4fcfd6fc-a781-41c2-90d9-43be1c7b26e5" />
+
 ## Challenges Overcome
 - **Data Cleaning:** Fixed issues with duplicate records and inconsistent formatting in the original source files.
 - **System Harmony:** Successfully connected different tools (Postgres, dbt, and Airflow) inside a containerized environment to work together smoothly.
